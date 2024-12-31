@@ -17,7 +17,16 @@
 #define va_arg(ap, type) (__builtin_va_arg(ap, type))
 #define va_end(ap) (__builtin_va_end(ap))
 #define va_copy(d, s) (__builtin_va_copy(d, s))
-# define do_div(n,base) ({unsigned int __base = (base);unsigned int __rem;if (((n) >> 32) == 0) {__rem = (unsigned int)(n) % __base;(n) = (unsigned int)(n) / __base;} else	__rem = __div64_32(&(n), __base);__rem;})
+#define do_div(n, base) ({                                                       \
+                          unsigned int __base = (base);                          \
+                          unsigned int __rem;                                    \
+                          if (((n) >> 32) == 0) {                                \
+                            __rem = (unsigned int)(n) % __base;                  \
+                            (n) = (unsigned int)(n) / __base;                    \
+                          } else                                                 \
+                            __rem = __div64_32((unsigned long *)(&(n)), __base); \
+                          __rem;                                                 \
+                        })
 
 typedef __builtin_va_list va_list;
 typedef unsigned long int uintmax_t;

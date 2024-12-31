@@ -4,7 +4,7 @@ all: user build_kernel copy_bin
 U = user
 K = os
 
-TOOLPREFIX = /opt/riscv64/bin/riscv64-unknown-elf-
+TOOLPREFIX = ${RISCV}/bin/riscv64-unknown-elf-
 CC = $(TOOLPREFIX)gcc
 AS = $(TOOLPREFIX)gcc
 LD = $(TOOLPREFIX)ld
@@ -128,3 +128,4 @@ doc:
 
 copy_bin:
 	cp $(BUILDDIR)/ucore os.bin
+
