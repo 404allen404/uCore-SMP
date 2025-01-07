@@ -15,7 +15,6 @@ GDB = $(TOOLPREFIX)gdb
 CP = cp
 MKDIR_P = mkdir -p
 
-
 BUILDDIR = build
 C_SRCS = $(wildcard $K/*.c) $(wildcard $K/*/*.c)
 AS_SRCS = $(wildcard $K/*.S) $(wildcard $K/*/*.S)
@@ -89,10 +88,7 @@ build/kernel: $(OBJS) os/kernel_app.ld os/link_app.S
 clean: 
 	rm -rf $(BUILDDIR) nfs/fs os/kernel_app.ld os/link_app.S os.bin
 
-# BOARD
-BOARD		?= qemu
-SBI			?= rustsbi
-BOOTLOADER	:= ./bootloader/fw_jump.bin
+BOOTLOADER := ./bootloader/fw_jump.bin
 
 QEMU = qemu-system-riscv64
 QEMUOPTS = \
@@ -100,10 +96,9 @@ QEMUOPTS = \
 	-smp $(CPUS) \
 	-machine virt \
 	-bios $(BOOTLOADER) \
-	-kernel build/kernel	\
-	-drive file=$(U)/riscv64-rootfs.img,if=none,format=raw,id=x0 \
-    -device virtio-blk-device,drive=x0,bus=virtio-mmio-bus.0
-
+	-kernel build/kernel \
+	-drive file=$(U)/fs.img,if=none,format=raw,id=x0 \
+  -device virtio-blk-device,drive=x0,bus=virtio-mmio-bus.0
 
 run: build/kernel
 	$(CP) $(U)/fs.img $(U)/fs-copy.img
@@ -117,14 +112,14 @@ QEMUGDB = $(shell if $(QEMU) -help | grep -q '^-gdb'; \
 debug: build/kernel .gdbinit
 	$(CP) $(U)/fs.img $(U)/fs-copy.img
 	$(QEMU) $(QEMUOPTS) -S $(QEMUGDB) &
-	sleep 1
-	$(GDB)
+	# sleep 1
+	# $(GDB)
 
 user:
 	make -C user
 
 doc:
-	make -C doc
+	make -C doc/ori_doc
 
 copy_bin:
 	cp $(BUILDDIR)/ucore os.bin

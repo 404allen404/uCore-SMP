@@ -4,6 +4,7 @@ ARCH ?= riscv64
 MODE ?= release
 out_dir := target/bin
 cmake_build_args := -DARCH=$(ARCH)
+
 ifeq ($(MODE), release)
 cmake_build_args += -DCMAKE_BUILD_TYPE=Release
 else ifeq ($(MODE), debug)
