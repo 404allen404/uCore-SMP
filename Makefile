@@ -112,7 +112,7 @@ QEMUGDB = $(shell if $(QEMU) -help | grep -q '^-gdb'; \
 debug: build/kernel .gdbinit
 	$(CP) $(U)/fs.img $(U)/fs-copy.img
 	$(QEMU) $(QEMUOPTS) -S $(QEMUGDB) &
-	# sleep 1
+	sleep 1
 	# $(GDB)
 
 user:
