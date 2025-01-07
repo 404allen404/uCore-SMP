@@ -261,7 +261,7 @@ void syscall()
         ret = sys_brk((void *)args[0]);
         break;
     case SYS_mmap:
-        ret = sys_mmap((void *)args[0], args[1], args[2], args[3], args[4], args[5]);
+        ret = (uint64_t)sys_mmap((void *)args[0], args[1], args[2], args[3], args[4], args[5]);
         break;
     case SYS_munmap:
         ret = sys_munmap((void *)args[0], args[1]);
@@ -291,7 +291,7 @@ void syscall()
         ret = sys_renameat2(args[0], (char *)args[1], args[2], (char *)args[3], args[4]);
         break;
     case SYS_ioctl:
-        ret = sys_ioctl(args[0], args[1], args[2]);
+        ret = sys_ioctl((int)args[0], (int)args[1], (void *)args[2]);
         break;
     case SYS_getrusage:
         ret = sys_getrusage(args[0], (struct rusage *)args[1]);

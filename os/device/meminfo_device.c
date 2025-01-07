@@ -1,6 +1,7 @@
 #include <proc/proc.h>
 #include <ucore/defs.h>
 #include "meminfo_device.h"
+#include <mem/string.h>
 
 void meminfo_device_init() {
     device_handler[MEMINFO_DEVICE].read = meminfo_read;

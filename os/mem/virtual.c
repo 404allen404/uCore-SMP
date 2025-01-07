@@ -457,7 +457,7 @@ int uvmmap_dup(pagetable_t old_pagetable, pagetable_t new_pagetable, uint64 va, 
         flags = PTE_FLAGS(*pte);
         if (shared) {
             dup_physical_page((char *)pa);
-            mem = pa;
+            mem = (char *)pa;
         } else {
             if ((mem = alloc_physical_page()) == 0)
                 goto err;

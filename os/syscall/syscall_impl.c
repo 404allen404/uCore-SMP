@@ -6,6 +6,7 @@
 #include <file/fcntl.h>
 #include <mem/shared.h>
 #include <mem/memory_layout.h>
+
 #define min(a, b) (a) < (b) ? (a) : (b);
 
 int sys_fstat(int fd, struct kstat *statbuf_va){
@@ -26,7 +27,6 @@ int sys_fstat(int fd, struct kstat *statbuf_va){
     }
 
     return filestat(f, (uint64)statbuf_va);
-
 }
 
 int sys_fstatat(int dirfd, const char *pathname, struct kstat *statbuf_va, int flags) {
@@ -241,13 +241,13 @@ int sys_mknod(char *path_va, short major, short minor) {
     return 0;
 }
 
-static int arg_copy(struct proc* p, char *arg_va[], char *arg[], char arg_str[][MAX_EXEC_ARG_LENGTH]) {
+static int arg_copy(struct proc* p, char *arg_va[], const char *arg[], char arg_str[][MAX_EXEC_ARG_LENGTH]) {
     int argc = 0;
 
     while (argc < MAX_EXEC_ARG_COUNT)
     {
         char* arg_i;   // the argv[i]
-        if (copyin(p->pagetable, (char*)&arg_i, (uint64) &arg_va[argc], sizeof(char*))<0){
+        if (copyin(p->pagetable, (char*)&arg_i, (uint64) &arg_va[argc], sizeof(char*)) < 0){
             break;
         }
 
@@ -267,7 +267,7 @@ static int arg_copy(struct proc* p, char *arg_va[], char *arg[], char arg_str[][
     return argc;
 }
 
-int sys_execve( char *pathname_va, char * argv_va[], char * envp_va[]) {
+int sys_execve(char *pathname_va, char * argv_va[], char * envp_va[]) {
     struct proc *p = curr_proc();
     char name[MAXPATH];
     char argv_str[MAX_EXEC_ARG_COUNT][MAX_EXEC_ARG_LENGTH];
@@ -1184,7 +1184,7 @@ int sys_getrusage(int who, struct rusage *usage_va) {
     usage.ru_stime.tv_sec = sys_time / USEC_PER_SEC;
     usage.ru_stime.tv_usec = sys_time % USEC_PER_SEC;
 
-    if (copyout(p->pagetable, (uint64)usage_va, &usage, sizeof(struct rusage)) != 0) {
+    if (copyout(p->pagetable, (uint64)usage_va, (char *)&usage, sizeof(struct rusage)) != 0) {
         infof("sys_getrusage: copyout failed");
         return -1;
     }
@@ -1207,7 +1207,7 @@ int sys_clock_gettime(int clock_id, struct timespec *tp_va) {
     t.tv_sec = time / USEC_PER_SEC;
     t.tv_nsec = (time % USEC_PER_SEC) * 1000;
 
-    if (copyout(p->pagetable, (uint64)tp_va, &t, sizeof(struct timespec)) != 0) {
+    if (copyout(p->pagetable, (uint64)tp_va, (char *)&t, sizeof(struct timespec)) != 0) {
         infof("sys_clock_gettime: copyout failed");
         return -1;
     }
@@ -1242,7 +1242,7 @@ int sys_pselect6(
     struct fd_set readfds;
     memset(&readfds, 0, sizeof(struct fd_set));
     int loop_cnt = 1000;
-    if (copyin(p->pagetable, &checkfds, (uint64)readfds_va, sizeof(struct fd_set)) != 0) {
+    if (copyin(p->pagetable, (char *)&checkfds, (uint64)readfds_va, sizeof(struct fd_set)) != 0) {
         infof("sys_pselect6: copyin readfds failed");
         goto err;
     }
@@ -1268,7 +1268,7 @@ int sys_pselect6(
         }
         yield();
     }
-    if (copyout(p->pagetable, (uint64)readfds_va, &readfds, sizeof(struct fd_set)) != 0) {
+    if (copyout(p->pagetable, (uint64)readfds_va, (char *)&readfds, sizeof(struct fd_set)) != 0) {
         infof("sys_pselect6: copyout readfds failed");
     }
 
