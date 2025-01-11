@@ -32,7 +32,7 @@ endif
 -include $(HEADER_DEP)
 
 ifndef CPUS
-CPUS := 5
+CPUS := 1
 endif
 
 CFLAGS = -Wall -O -fno-omit-frame-pointer -ggdb
@@ -104,16 +104,10 @@ run: build/kernel
 	$(CP) $(U)/fs.img $(U)/fs-copy.img
 	$(QEMU) $(QEMUOPTS)
 
-# QEMU's gdb stub command line changed in 0.11
-QEMUGDB = $(shell if $(QEMU) -help | grep -q '^-gdb'; \
-	then echo "-gdb tcp::15234"; \
-	else echo "-s -p 15234"; fi)
-	
+QEMUGDB = -s
 debug: build/kernel .gdbinit
 	$(CP) $(U)/fs.img $(U)/fs-copy.img
-	$(QEMU) $(QEMUOPTS) -S $(QEMUGDB) &
-	sleep 1
-	# $(GDB)
+	$(QEMU) $(QEMUOPTS) -S $(QEMUGDB) 
 
 user:
 	make -C user
