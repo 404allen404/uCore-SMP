@@ -23,6 +23,8 @@ AS_OBJS = $(addprefix $(BUILDDIR)/, $(addsuffix .o, $(basename $(AS_SRCS))))
 
 OBJS = $(C_OBJS) $(AS_OBJS)
 
+FS_IMG = riscv64-rootfs.img
+
 HEADER_DEP = $(addsuffix .d, $(basename $(C_OBJS)))
 
 ifeq (,$(findstring link_app.o,$(OBJS)))
@@ -90,23 +92,21 @@ clean:
 
 BOOTLOADER := ./bootloader/fw_jump.bin
 
-QEMU = qemu-system-riscv64
+QEMU = $(QEMU_5_0_0)/bin/qemu-system-riscv64
 QEMUOPTS = \
 	-nographic \
 	-smp $(CPUS) \
 	-machine virt \
 	-bios $(BOOTLOADER) \
 	-kernel build/kernel \
-	-drive file=$(U)/fs.img,if=none,format=raw,id=x0 \
+	-drive file=$(U)/$(FS_IMG),if=none,format=raw,id=x0 \
   -device virtio-blk-device,drive=x0,bus=virtio-mmio-bus.0
 
 run: build/kernel
-	$(CP) $(U)/fs.img $(U)/fs-copy.img
 	$(QEMU) $(QEMUOPTS)
 
 QEMUGDB = -s
 debug: build/kernel .gdbinit
-	$(CP) $(U)/fs.img $(U)/fs-copy.img
 	$(QEMU) $(QEMUOPTS) -S $(QEMUGDB) 
 
 user:
