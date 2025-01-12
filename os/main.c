@@ -4,6 +4,7 @@
 #include <proc/proc.h>
 #include <fatfs/init.h>
 #include <fatfs/fftest.h>
+
 extern char s_bss[];
 extern char e_bss[];
 extern char s_text[];
@@ -14,6 +15,7 @@ extern char s_data[];
 extern char e_data[];
 extern char boot_stack[];
 extern char boot_stack_top[];
+
 static void clean_bss() {
     char *p;
     for (p = s_bss; p < e_bss; ++p)
@@ -22,7 +24,9 @@ static void clean_bss() {
 
 volatile static int first_hart = 1;
 volatile static int all_started = 0;
+
 void start_hart(uint64 hartid, uint64 start_addr, uint64 a1);
+
 void hart_bootcamp(uint64 hartid, uint64 a1) {
     w_tp(hartid);
     kvminithart(); // turn on paging
@@ -93,7 +97,7 @@ void main(uint64 hartid, uint64 a1) {
         if (hartid >= NCPU){
             panic("unexpected hartid");
         }
-        int CPU_START=1;    // core 0 is not usable
+        int CPU_START=1; // core 0 is not usable
 
         for (int i = CPU_START; i < NCPU; i++) {
             if (i != hartid && i!=0) // not this hart
@@ -112,6 +116,7 @@ void main(uint64 hartid, uint64 a1) {
     } else {
         hart_bootcamp(hartid, a1);
     }
+
     while (!all_started) {
         ; // wait until all hard started
     }

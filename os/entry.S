@@ -2,7 +2,7 @@
     .globl _entry
 _entry:
     # a0: hartid
-    # every core has a boot stack of 4 KB
+    # every core has a boot stack of 4KB
     la sp, boot_stack
     li t1, 1024*4   # t1 = 4KB
     addi t0, a0, 1  # t0 = hartid + 1

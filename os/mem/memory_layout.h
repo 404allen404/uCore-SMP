@@ -71,10 +71,8 @@
 #define PLIC_MCLAIM(hart) (PLIC + 0x200004 + (hart)*0x2000)
 #define PLIC_SCLAIM(hart) (PLIC + 0x201004 + (hart)*0x2000)
 
-
 #define USER_STACK_BOTTOM 0xC0000000   // 3GB, user stack lower address 
 #define USER_TEXT_START 0x1000
-
 
 #ifdef K210
 #define GPIOHS                  0x38001000
@@ -96,5 +94,4 @@
 #define SPI1_V                  (0x53000000 + VIRT_OFFSET)
 #define SPI2_V                  (0x54000000 + VIRT_OFFSET)
 #define SYSCTL_V                (0x50440000 + VIRT_OFFSET)
-
 #endif

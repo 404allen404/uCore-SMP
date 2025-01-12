@@ -23,7 +23,8 @@ AS_OBJS = $(addprefix $(BUILDDIR)/, $(addsuffix .o, $(basename $(AS_SRCS))))
 
 OBJS = $(C_OBJS) $(AS_OBJS)
 
-FS_IMG = riscv64-rootfs.img
+# FS_IMG = riscv64-rootfs.img
+FS_IMG = fs.img
 
 HEADER_DEP = $(addsuffix .d, $(basename $(C_OBJS)))
 
@@ -34,7 +35,7 @@ endif
 -include $(HEADER_DEP)
 
 ifndef CPUS
-CPUS := 1
+CPUS := 5
 endif
 
 CFLAGS = -Wall -O -fno-omit-frame-pointer -ggdb
@@ -93,10 +94,12 @@ clean:
 BOOTLOADER := ./bootloader/fw_jump.bin
 
 QEMU = $(QEMU_5_0_0)/bin/qemu-system-riscv64
+
 QEMUOPTS = \
 	-nographic \
 	-smp $(CPUS) \
 	-machine virt \
+	-m 256M \
 	-bios $(BOOTLOADER) \
 	-kernel build/kernel \
 	-drive file=$(U)/$(FS_IMG),if=none,format=raw,id=x0 \

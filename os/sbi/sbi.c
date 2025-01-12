@@ -64,6 +64,6 @@ void set_timer(uint64 stime) {
     sbi_call(SBI_SET_TIMER, stime, 0, 0);
 }
 
-void start_hart(uint64 hartid,uint64 start_addr, uint64 a1) {
+void start_hart(uint64 hartid, uint64 start_addr, uint64 a1) {
     a_sbi_ecall(0x48534D, 0, hartid, start_addr, a1, 0, 0, 0);
 }

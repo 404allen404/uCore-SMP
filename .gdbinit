@@ -5,5 +5,5 @@ symbol-file build/kernel
 set disassemble-next-line auto
 display/12i $pc-8
 set riscv use-compressed-breakpoints yes
-# break *0x1000
-break *0x8020f6d8
+# break *0x8020f6d8
+break kinit 

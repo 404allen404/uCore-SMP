@@ -51,16 +51,16 @@ void recycle_physical_page(void *pa) {
     struct linklist *l;
     if (((uint64)pa % PGSIZE) != 0 || (char *)pa < ekernel || (uint64)pa >= PHYSTOP)
         panic("recycle_physical_page");
+
     // Fill with junk to catch dangling refs.
     memset(pa, 1, PGSIZE);
     l = (struct linklist *)pa;
 
     acquire(&kmem.lock);
-
     l->next = kmem.freelist;
-
     kmem.freelist = l;
     kmem.free_page_count++;
+
     kmem.pfn_ref[((uint64)l - KERNBASE) >> PGSHIFT] = 0;
     release(&kmem.lock);
 }
